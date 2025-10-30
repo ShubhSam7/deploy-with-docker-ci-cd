@@ -9,8 +9,7 @@ app.get("/users", async (req, res) => {
     const user = await prismaClient.user.findMany()
     res.json({
         msg: "These are the users",
-        username: user.username,
-        password: user.password
+        user
     })
 })
 
