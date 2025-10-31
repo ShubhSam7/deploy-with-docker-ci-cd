@@ -2,7 +2,7 @@
 ## Push the docker image to docker hub
 ## SSH into out VM and start the new image
 
-name: Deploy the backend
+name: Deploy the frontend
 on:
     push:
         branches: [ main ]
@@ -28,11 +28,13 @@ jobs:
               uses: docker/build-push-action@v4
               with:
                 context: .
-                file: ./Dockerfile.backend
+                file: ./Dockerfile.frontend
                 push: true
-                tags: shubh7124/app-backend:${{ github.sha }}
+                tags: shubh7124/app-frontend:${{ github.sha }}
+                build-args: |
+                    DATABASE_URL=${{ secrets.STAGING_DATABASE }}
 
-            # - name: Clone staging-backend repo, update, and push
+            # - name: Clone staging-frontend repo, update, and push
             #   env:
             #     PAT: ${{ secrets.PAT }}
             #   run: |

@@ -8,13 +8,13 @@ COPY ./package.json ./package.json
 COPY ./turbo.json ./turbo.json
 COPY ./apps/backend ./apps/backend
 
-RUN bun i
+RUN bun install --frozen-lockfile
 RUN bun run db:generate
 
 COPY . .
 
-RUN bun i
+RUN bun install
 
 EXPOSE 8080
 
-CMD ['bun', "run", "start:backend"]
+CMD ["bun", "run", "start:backend"]

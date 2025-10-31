@@ -2,7 +2,7 @@
 ## Push the docker image to docker hub
 ## SSH into out VM and start the new image
 
-name: Deploy the backend
+name: Deploy the websocket
 on:
     push:
         branches: [ main ]
@@ -28,9 +28,9 @@ jobs:
               uses: docker/build-push-action@v4
               with:
                 context: .
-                file: ./Dockerfile.backend
+                file: ./Dockerfile.websocket
                 push: true
-                tags: shubh7124/app-backend:${{ github.sha }}
+                tags: shubh7124/app-websocket:${{ github.sha }}
 
             # - name: Clone staging-backend repo, update, and push
             #   env:
