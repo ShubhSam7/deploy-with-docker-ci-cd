@@ -1,6 +1,6 @@
 ## Build the docker image
 ## Push the docker image to docker hub
-## SSH into out VM and start the new image
+## SSH into our VM and start the new image
 
 name: Deploy the backend
 on:
@@ -8,7 +8,7 @@ on:
         branches: [ main ]
 
 jobs:
-    buid:
+    build:
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v2
@@ -34,11 +34,9 @@ jobs:
 
             - name: Deploy to the VM
               run: |
-                echo "${{ secrets.SSH_PRIVATE_KEY }}" &> ~/ssh_key
                 mkdir -p /home/runner/.ssh
-                ls /home/runner/.ssh
-                touch /home/runner/.ssh/known_hosts
-                echo "${{ secrets.KNOWN_HOSTS }}" &> /home/runner/.ssh/known_hosts
-                chmod 700 /home/runner/ssh_key
-                ssh -o StrictHostKeyChecking=no -i ~/ssh_key root@16.170.230.110 -t "docker stop app-backend && docker run --name app-backend -d -p 8080:8080 shubh7124/app-backend:${{ github.sha }}"
-                
+                echo "${{ secrets.SSH_PRIVATE_KEY }}" > /home/runner/.ssh/ssh_key
+                echo "${{ secrets.KNOWN_HOSTS }}" > /home/runner/.ssh/known_hosts
+                chmod 600 /home/runner/.ssh/ssh_key
+                chmod 644 /home/runner/.ssh/known_hosts
+                ssh -o StrictHostKeyChecking=no -i /home/runner/.ssh/ssh_key ubuntu@16.170.230.110 "docker stop app-backend || true && docker rm app-backend || true && docker pull shubh7124/app-backend:${{ github.sha }} && docker run --name app-backend -d -p 8080:8080 shubh7124/app-backend:${{ github.sha }}"
