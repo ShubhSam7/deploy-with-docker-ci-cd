@@ -32,9 +32,13 @@ jobs:
                 push: true
                 tags: shubh7124/app-backend:${{ github.sha }}
 
-            # - name: Clone staging-backend repo, update, and push
-            #   env:
-            #     PAT: ${{ secrets.PAT }}
-            #   run: |
-            #     git clone https://github.com/ShubhSam7/deploy-with-docker-ci-cd.git
+            - name: Deploy to the VM
+              run: |
+                echo "${{ secrets.SSH_PRIVATE_KEY }}" &> ~/ssh_key
+                mkdir -p /home/runner/.ssh
+                ls /home/runner/.ssh
+                touch /home/runner/.ssh/known_hosts
+                echo "${{ secrets.KNOWN_HOSTS }}" &> /home/runner/.ssh/known_hosts
+                chmod 700 /home/runner/ssh_key
+                ssh -o StrictHostKeyChecking=no -i ~/ssh_key root@16.170.230.110 -t "docker stop app-backend && docker run --name app-backend -d -p 8080:8080 shubh7124/app-backend:${{ github.sha }}"
                 
